@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Graphic Ex 3</title>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+		integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
+
+	<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+	<main id="workplace">
+		<header>
+			<input id="inputFile" type="file" />
+			<button id="importBtn">Import</button>
+		</header>
+		<nav id="toolbar">
+			<section id="shapes">
+				<button id="presBtn">
+					pres
+				</button>
+				<button id="ortBtn">
+					ort
+				</button>
+				<button id="oblBtn">
+					obl
+				</button>
+			</section>
+			<section id="transformations">
+				<button id="scaleBtn">
+					<i class="fas fa-expand"></i>
+				</button>
+				<button id="rotateBtn">
+					rotX
+				</button>
+				<button id="rotateYBtn">
+					rotY
+				</button>
+				<button id="rotateZBtn">
+					rotZ
+				</button>
+			</section>
+			<a href="javascript:void(0);" onclick="javascipt:window.open('help.pdf');" id="helpBtn">
+				?
+			</a>
+			<article id="setter">
+				<input type="text" id="setter-value" value="100" />
+				<button id="setter-btn">set</button>
+			</article>
+		</nav>
+		<article id="canvas-container">
+			<canvas width="900" height="500" id="canvas"></canvas>
+		</article>
+	</main>
+
+	<!-- utils & consts -->
+	<script src="./components/consts.js"></script>
+	<script src="./components/utils.js"></script>
+
+	<!-- shapes & more -->
+	<script src="./components/output_builder.js"></script>
+	<script src="./components/transformations.js"></script>
+	<script src="./components//transpormations3d.js"></script>
+	<script src="./components/shapes/point.js"></script>
+	<script src="./components/shapes/point3d.js"></script>
+	<script src="./components/3Dshapes/polygon.js"></script>
+	<script src="./components/shapes/base_shape.js"></script>
+	<script src="./components/shapes/circle.js"></script>
+	<script src="./components/shapes/line.js"></script>
+	<script src="./components/shapes/bezier_curve.js"></script>
+	<script src="./components/canvas.js"></script>
+	<script src="./components/canvas3D.js"></script>
+	<script src="./components/toolbar/buttons/button_base.js"></script>
+	<script src="./components/toolbar/buttons/shape_button_base.js"></script>
+
+	<!-- shapes buttons-->
+	<script src="./components/toolbar/buttons/line_button.js"></script>
+	<script src="./components/toolbar/buttons/circle_button.js"></script>
+	<script src="./components/toolbar/buttons/bezier_button.js"></script>
+
+	<!-- Transformations -->
+	<script src="./components/toolbar/buttons/scale_button.js"></script>
+	<script src="./components/toolbar/buttons/move_button.js"></script>
+	<script src="./components/toolbar/buttons/rotate_button.js"></script>
+	<script src="./components/toolbar/buttons/flip_x_button.js"></script>
+	<script src="./components/toolbar/buttons/flip_y_button.js"></script>
+	<script src="./components/toolbar/buttons/snip_button.js"></script>
+	<script src="./components/toolbar/buttons/fit_button.js"></script>
+
+	<!-- more buttons -->
+	<script src="./components/toolbar/buttons/export_button.js"></script>
+	<script src="./components/toolbar/buttons/import_button.js"></script>
+	<script src="./components//toolbar/buttons/oblBtn.js"></script>
+	<script src="./components//toolbar/buttons/ortBtn.js"></script>
+	<script src="./components//toolbar/buttons/prespectiveBtn.js"></script>
+
+	<!-- main components -->
+	<script src="./components/toolbar/toolbar.js"></script>
+	<script src="./components/paint.js"></script>
+	<script src="./paintApp.js"></script>
+</body>
+
+</html>
