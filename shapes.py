@@ -2,6 +2,7 @@ import polygon
 
 class shapes():
     polygons = []
+    visible_polygons = []
     point_3d = {}
     
     def __init__(self, point_number, point_list, polygon_list):
@@ -24,8 +25,15 @@ class shapes():
     def sort_polygons(self):  
         '''sort polygon list according to z value = depth'''  
         # delete after test####################
-        inx = 0
-        for my_poly in self.polygons:
-            print('polygon'+ str(inx), my_poly)
-            inx += 1
+        # inx = 0
+        # for my_poly in self.polygons:
+        #     print('polygon'+ str(inx), my_poly)
+        #     inx += 1
         # #####################################
+        '''1. sort polygons'''
+        self.polygons.sort(key=lambda polygon_obj: polygon_obj.max_z, reverse=True)
+        
+        '''2. if visible = 1, add polygon to draw polygon list'''
+        for my_poly in self.polygons:
+            if my_poly.visible == 1:
+                self.visible_polygons.append(my_poly)

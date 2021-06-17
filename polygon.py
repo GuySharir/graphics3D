@@ -39,6 +39,10 @@ class point_3D():
         '''multyplication between points'''
         return self.x * point.x + self.y * point.y + self.z * point.z
 
+    def get_tuple(self):
+        '''get point using tuple'''
+        return (self.x, self.y)
+
 class polygon():    # max_z, normal, visible, fill_color
     '''constructor'''
     def __init__(self, point_3D_list):
@@ -65,6 +69,13 @@ class polygon():    # max_z, normal, visible, fill_color
         print('visible', self.visible)
             
         return 'polygon info'
+
+    def get_points_tuple(self):
+        '''get list of points using tuple'''
+        points = []
+        for point in self.project_points:
+            points.extend(point.get_tuple())
+        return points
 
     def features_calc(self):
         '''update polygon's features when creating polygon'''
@@ -112,7 +123,7 @@ class polygon():    # max_z, normal, visible, fill_color
         for point in self.points3D:
             vec = np.array([point.x, point.y, point.z, 1])
             result = np.matmul(vec, mtrix)
-            print('result', result)
+            # print('result', result)
             self.project_points.append(point_3D(result[0], result[1], result[2]))      
 
     def prespective_project(self):
