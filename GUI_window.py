@@ -85,10 +85,10 @@ class GUI_window():
         print("number of polygon:", polygon_number, "polygon:", polygon, "\n") 
         shapes.shapes(point_number, point, polygon)         
 
-        # self.draw_polygons()
+        self.draw_polygons()
 
     def draw_polygons(self):
-        pass
+        print('draw polygon')
 
    
 
