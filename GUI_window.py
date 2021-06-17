@@ -34,6 +34,7 @@ class GUI_window():
         window.mainloop()
 
     def clean_canvas(self):
+        '''clean canvas'''
         self.canvas.delete("all")
         self.messages.config(text="All clean! Let's start again")
 
@@ -41,6 +42,7 @@ class GUI_window():
         self.canvas.create_image((self.img_size // 2, self.img_size // 2), image=self.img_size, state="normal")
 
     def browseFiles(self):
+        '''upload file'''
         filename = filedialog.askopenfilename(initialdir="/",
                                                   title="Select a File",
                                                   filetypes=(("Text files",
@@ -50,6 +52,7 @@ class GUI_window():
         self.getFileObjects(filename)
 
     def getFileObjects(self, fileName):
+        '''read file content into two lists - points and polygons'''
         read_object = "empty"
         point_number = []
         point = []
@@ -77,10 +80,10 @@ class GUI_window():
                         print(space_split)
                         polygon_number.append(space_split[0])
                         polygon.append(space_split[1])
-                        
-        shapes.shapes.insert_polygons(point_number, point, polygon_number, polygon)
+
         print("number of points:", point_number, "points:", point, "\n")   
-        print("number of polygon:", polygon_number, "polygon:", polygon, "\n")          
+        print("number of polygon:", polygon_number, "polygon:", polygon, "\n") 
+        shapes.shapes(point_number, point, polygon)         
 
         # self.draw_polygons()
 
