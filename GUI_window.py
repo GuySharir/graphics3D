@@ -89,7 +89,9 @@ class GUI_window():
 
     def draw_polygons(self):
         print('draw polygon')
+        print('visible polygons', shapes.shapes.visible_polygons)
         for poly in shapes.shapes.visible_polygons:
+            
             print(poly.get_points_tuple())
             self.canvas.create_polygon(poly.get_points_tuple(), fill='#ffa4a9', width= 2, outline='#ffffff')
 
