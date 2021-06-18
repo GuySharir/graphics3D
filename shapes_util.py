@@ -257,12 +257,17 @@ class Shapes:
             ])
 
         for poly in self.visible_polygons:
+            print(f'before: {poly.get_points_list()}')
+            new_points = []
             points = poly.get_points_list()
-            new_point = [float(points[0]), float(
-                points[1]), float(points[2]), 1]
+            for point in points:
+                new_point = [float(point[0]), float(
+                    point[1]), float(point[2]), 1]
 
-            tmp = np.matmul(new_point, mat)
-            print(tmp)
-            tmp = [float(x) for x in tmp]
-            tmp = tmp[:-1]
-            poly.set_new_points(tmp)
+                new_point = np.matmul(new_point, mat)
+                # new_point = [float(x) for x in tmp]
+                new_point = list(new_point[:-1])
+                new_points.append(new_point)
+
+            poly.set_new_points(new_points)
+            print(f'after: {poly.get_points_list()}')
