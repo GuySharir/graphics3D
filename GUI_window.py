@@ -63,8 +63,10 @@ class GUI_window():
         self.data.update_visibility_polygons()
         self.draw_polygons()
 
-    def rotate(self, case):
-        self.data.rotate(case)
+    def rotate(self, case, val=15):
+        self.data.rotate(case, val)
+        self.data.update_visibility_polygons()
+        self.draw_polygons()
 
     def clean_canvas(self):
         '''clean canvas'''
@@ -119,7 +121,6 @@ class GUI_window():
         self.draw_polygons()
 
     def draw_polygons(self):
-        print('draw polygon')
         self.clean_canvas()
         for poly in self.data.visible_polygons:
             self.canvas.create_polygon(poly.get_points_tuple(
