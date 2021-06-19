@@ -7,6 +7,8 @@ import os
 
 
 class GUI_window():
+    """GUI class"""
+
     def __init__(self):
         window = Tk()
         window.title("3D transformations")
@@ -14,25 +16,25 @@ class GUI_window():
         self.path = os.getcwd()
         self.data = None
 
-        # for move
+        """for move"""
         self.move_val = 10
-        # for rotate
+        """for rotate"""
         self.deg = 10
 
         self.color_code = '#ffa4a9'
 
-        # add massage box to contact with the user
+        """add massage box to contact with the user"""
         fontStyle = tkFont.Font(family="Lucida Grande", size=13)
         self.messages = Label(
             window, bg='pink', text="Lets start! Please upload file", anchor='w', font=fontStyle)
         self.messages.pack(fill=X, side=BOTTOM)
         self.warning_mg = 0
 
-        # menu
+        """menu"""
         menubar = Frame(window)
         side_menu = Frame(window)
 
-        # top buttons
+        """top buttons"""
         Button(menubar, text="File", command=self.browseFiles, height=2,
                width=10, bg='pink').grid(row=0, column=0, padx=10, pady=10)
         Button(menubar, text="Clean canvas", command=lambda: self.clean_canvas(
@@ -49,9 +51,9 @@ class GUI_window():
                width=10, bg='pink').grid(row=0, column=6, padx=10, pady=10)
         menubar.pack(side=TOP)
 
-        # left buttons
+        """left buttons"""
         Scale(side_menu, label='Rotate', from_=-360, to=360, showvalue=1, orient=HORIZONTAL,
-               command=self.angle_input).grid(row=0, column=0, padx=0, pady=0)
+              command=self.angle_input).grid(row=0, column=0, padx=0, pady=0)
 
         Button(side_menu, text="Rotate by x", command=lambda: self.rotate(
             'x'), height=2, width=10, bg='pink').grid(row=1, column=0, padx=10, pady=10)
@@ -62,8 +64,8 @@ class GUI_window():
         Button(side_menu, text="Rotate by z", command=lambda: self.rotate(
             'z'), height=2, width=10, bg='pink').grid(row=3, column=0, padx=10, pady=10)
 
-        Scale(side_menu, label='Move', from_=-360, to=360, showvalue=1, orient=HORIZONTAL, 
-               command=self.move_input).grid(row=4, column=0, padx=50, pady=4)
+        Scale(side_menu, label='Move', from_=-360, to=360, showvalue=1, orient=HORIZONTAL,
+              command=self.move_input).grid(row=4, column=0, padx=50, pady=4)
 
         Button(side_menu, text="Move x", command=lambda: self.move(
             'x'), height=2, width=10, bg='pink').grid(row=5, column=0, padx=10, pady=10)
@@ -96,6 +98,7 @@ class GUI_window():
         self.move_val = int(move)
 
     def choose_color(self):
+        """ change the scene color based on color picker"""
         old_color = self.color_code
         self.color_code = colorchooser.askcolor(title="Choose color")[1]
 
@@ -108,12 +111,14 @@ class GUI_window():
             self.draw_polygons()
 
     def move(self, axis='y'):
+        """call move function"""
         self.warning()
         if self.warning_mg == 0:
             self.data.move_polygons(axis, self.move_val)
             self.draw_polygons()
 
     def rotate(self, case):
+        """call rotate function"""
         self.warning()
         if self.warning_mg == 0:
             self.data.rotate(case, self.deg)
@@ -128,6 +133,7 @@ class GUI_window():
             self.data = None
 
     def change_perspective(self, case):
+        """update perspective"""
         self.warning()
         if self.warning_mg == 0:
             self.data.set_perspective(case)
@@ -178,6 +184,7 @@ class GUI_window():
             self.draw_polygons()
 
     def draw_polygons(self):
+        """for each polygon draw polygon on canvas"""
         self.warning()
         if self.warning_mg == 0:
             self.clean_canvas()

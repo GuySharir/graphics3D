@@ -2,17 +2,19 @@ import math
 from tkinter.constants import TRUE
 import numpy as np
 
+"""consts used to define the wanted perspectives"""
 OBLIQUE = "oblique"
 PERSPECTIVE = "perspective"
 ORTHOGRAPHIC = "orthographic"
 
 
 def subtract_points(l_point, r_point):
-    """calc vector multiplication"""
+    """helper function to subtract two points"""
     return [l_point[0] - r_point[0], l_point[1] - r_point[1], l_point[2] - r_point[2]]
 
 
 def mult_cross_points(l_point, r_point):
+    """ multiply points crossed """
     point_x = l_point[1] * r_point[2] - l_point[2] * r_point[1]
     point_y = l_point[2] * r_point[0] - l_point[0] * r_point[2]
     point_z = l_point[0] * r_point[1] - l_point[1] * r_point[0]
@@ -21,14 +23,14 @@ def mult_cross_points(l_point, r_point):
 
 def multyplication_points(l_point, r_point):
     """multyplication between points"""
-
     return l_point[0] * r_point[0] + l_point[1] * r_point[1] + l_point[2] * r_point[2]
 
 
 class Polygon:
-    """constructor"""
+    """this class describes a single polygon in the scene"""
 
     def __init__(self, points):
+        """constructor"""
         self.lineColor = "#000000"
         self.points = points        # [[x,y,z],[x,y,z],[x,y,z],[x,y,z]]
         self.originalPoints = points
@@ -40,7 +42,7 @@ class Polygon:
         return "polygon object"
 
     def __str__(self):
-        """print polygon info"""
+        """get string representaion of the polygon object"""
         print("points: ", self.points)
         print("max_z", self.max_z)
         print("normal", self.normal)
@@ -85,6 +87,7 @@ class Polygon:
         self.normal = mult_cross_points(vec_1, vec_2)
 
     def choose_perspective(self, perspective):
+        """ switch like to decide perspective"""
         if perspective == PERSPECTIVE:
             self.perspective_project()
         elif perspective == OBLIQUE:
@@ -149,6 +152,7 @@ class Polygon:
         self.points = new_points
 
     def move(self, axis, val):
+        """ move a singke polygon on the screen"""
         for point in self.points:
             if axis == 'x':
                 point[0] += val
@@ -160,6 +164,7 @@ class Polygon:
                 self.zoom(val)
 
     def zoom(self, val):
+        """zoom in and out depend on the value sent"""
         if val > 0:
             val = 1.1
         else:
@@ -180,6 +185,7 @@ class Polygon:
 
 
 class Shapes:
+    """ this class holds all the shapes in the scene"""
     polygons = []
     visible_polygons = []
     points = {}
@@ -202,44 +208,19 @@ class Shapes:
         for poly in self.polygons:
             poly.choose_perspective(self.perspective)
 
-    def center_scene(self):
-        max_x = 0
-        max_y = 0
-        min_x = 0
-        min_y = 0
-
-        for poly in self.polygons:
-            for point in poly.points:
-                max_x = max(max_x, point[0])
-                max_y = max(max_y, point[1])
-                min_x = min(min_x, point[0])
-                min_y = min(min_y, point[1])
-
-        for poly in self.polygons:
-            for point in poly.points:
-                if min_x < 0:
-                    point[0] += 450 - min_x
-
-                if min_y < 0:
-                    point[1] += 300 - min_y
-
-                if max_x > 700:
-                    point[0] += max_x - 450
-
-                if max_y > 700:
-                    point[1] = max_y - 300
-
     def sort_polygons(self):
+        """ sort the polygons based on the Z value"""
         self.polygons.sort(
             key=lambda polygon_obj: polygon_obj.max_z, reverse=False)
 
     def move_polygons(self, axis='x', amount='50'):
+        """ move polygons on screen"""
         for poly in self.polygons:
             poly.move(axis, amount)
 
     def update_visibility_polygons(self):
-        """2. if visible = 1, add polygon to draw polygon list"""
-
+        """ decide which polygons are visible,
+        if visible = 1, add polygon to draw polygon list"""
         self.sort_polygons()
         self.visible_polygons = []
 
@@ -247,20 +228,21 @@ class Shapes:
             if poly.visible:
                 self.visible_polygons.append(poly)
 
-    # only if flag of perspective changed
     def change_perspective(self):
+        """for each polygon update points 
+        according to perspective that the user choose"""
         for poly in self.polygons:
             poly.choose_perspective(self.perspective)
 
-        # self.update_visibility_polygons()
-
     def set_perspective(self, perspective):
+        """update perspective only if it changes"""
         if perspective != self.perspective:
             print(f"was: {self.perspective} changing to: {perspective}")
             self.perspective = perspective
             self.change_perspective()
 
     def rotate(self, direction, angle):
+        """update point according to rotatio algorithm"""
         mat = []
         cos = math.cos(angle * math.pi / 180)
         sin = math.sin(angle * math.pi / 180)
