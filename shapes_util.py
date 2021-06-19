@@ -30,7 +30,7 @@ def multyplication_points(l_point, r_point):
 class Polygon:  # max_z, normal, visible, fill_color
     """constructor"""
 
-    def _init_(self, points):
+    def __init__(self, points):
         self.lineColor = "#000000"
         self.points = points        # [[x,y,z],[x,y,z],[x,y,z],[x,y,z]]
         self.originalPoints = points
@@ -38,10 +38,10 @@ class Polygon:  # max_z, normal, visible, fill_color
         self.normal = []
         self.features_calc()
 
-    def _repr_(self):
+    def __repr__(self):
         return "polygon object"
 
-    def _str_(self):
+    def __str__(self):
         """print polygon info"""
         print("points: ", self.points)
         print("max_z", self.max_z)
@@ -160,7 +160,7 @@ class Shapes:
     points = {}
     perspective = "oblique"
 
-    def _init_(self, point_list, polygon_list):
+    def __init__(self, point_list, polygon_list):
         """insert 3D point and polygons from file"""
 
         for point_number in point_list:
