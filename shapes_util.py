@@ -1,4 +1,3 @@
-# import polygon
 import math
 from tkinter.constants import TRUE
 import numpy as np
@@ -22,12 +21,11 @@ def mult_cross_points(l_point, r_point):
 
 def multyplication_points(l_point, r_point):
     """multyplication between points"""
-    # print(l_point[0] * r_point[0] + l_point[1]
-    #       * r_point[1] + l_point[2] * r_point[2])
+
     return l_point[0] * r_point[0] + l_point[1] * r_point[1] + l_point[2] * r_point[2]
 
 
-class Polygon:  # max_z, normal, visible, fill_color
+class Polygon:
     """constructor"""
 
     def __init__(self, points):
@@ -94,7 +92,7 @@ class Polygon:  # max_z, normal, visible, fill_color
         elif perspective == ORTHOGRAPHIC:
             self.orthographic_project()
 
-        self.features_calc()
+        self.features_calc(False)
 
     def Visibility_calc(self):
         """find polygon's visability"""
@@ -149,9 +147,12 @@ class Polygon:  # max_z, normal, visible, fill_color
                 point[2] += val
 
     def center_poly(self):
+        print(f"before: {self.points}")
         for point in self.points:
-            point[0] += 450
+            point[0] += 400
             point[1] += 300
+
+        print(f"after: {self.points}")
 
 
 class Shapes:
@@ -174,11 +175,10 @@ class Shapes:
             self.polygons.append(Polygon(tmp))
             tmp = []
 
-        """1. sort polygons"""
-        # self.sort_polygons()
-        # self.update_visibility_polygons()
+        for poly in self.polygons:
+            poly.choose_perspective(self.perspective)
 
-    def centere_scene(self):
+    def center_scene(self):
         max_x = 0
         max_y = 0
         min_x = 0
@@ -200,10 +200,10 @@ class Shapes:
                     point[1] += 300 - min_y
 
                 if max_x > 700:
-                    pass
+                    point[0] += max_x - 450
 
                 if max_y > 700:
-                    pass
+                    point[1] = max_y - 300
 
     def sort_polygons(self):
         self.polygons.sort(
@@ -216,6 +216,7 @@ class Shapes:
     def update_visibility_polygons(self):
         """2. if visible = 1, add polygon to draw polygon list"""
 
+        self.sort_polygons()
         self.visible_polygons = []
 
         for poly in self.polygons:
@@ -224,15 +225,14 @@ class Shapes:
 
     # only if flag of perspective changed
     def change_perspective(self):
-        self.sort_polygons()
-
         for poly in self.polygons:
             poly.choose_perspective(self.perspective)
 
-        self.update_visibility_polygons()
+        # self.update_visibility_polygons()
 
     def set_perspective(self, perspective):
         if perspective != self.perspective:
+            print(f"was: {self.perspective} changing to: {perspective}")
             self.perspective = perspective
             self.change_perspective()
 
@@ -269,7 +269,7 @@ class Shapes:
             ])
 
         for poly in self.polygons:
-            print(f'before: {poly.get_points_list()}')
+
             new_points = []
             points = poly.get_points_list()
             for point in points:
@@ -282,7 +282,7 @@ class Shapes:
                 new_points.append(new_point)
 
             poly.set_new_points(new_points)
-            print(f'after: {poly.get_points_list()}')
+
             poly.features_calc()
 
         self.update_visibility_polygons()
