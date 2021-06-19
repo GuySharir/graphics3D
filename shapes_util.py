@@ -79,12 +79,11 @@ class Polygon:  # max_z, normal, visible, fill_color
             if point[2] > self.max_z:
                 self.max_z = point[2]
 
-    def features_calc(self, full=True, perspective="oblique"):
+    def features_calc(self, full=True):
         """update polygon's features when creating polygon"""
         if full:
             self.maxZ()
 
-        self.choose_perspective(perspective)
         self.normal_calc()
         self.Visibility_calc()
 
@@ -102,6 +101,8 @@ class Polygon:  # max_z, normal, visible, fill_color
             self.oblique_project()
         elif perspective == ORTHOGRAPHIC:
             self.orthographic_project()
+
+        self.features_calc()
 
     def Visibility_calc(self):
         """find polygon's visability"""
@@ -155,6 +156,11 @@ class Polygon:  # max_z, normal, visible, fill_color
             if axis == 'z':
                 point[2] += val
 
+    def center_poly(self):
+        for point in self.points:
+            point[0] += 450
+            point[1] += 300
+
 
 class Shapes:
     polygons = []
@@ -177,24 +183,18 @@ class Shapes:
             tmp = []
 
         """1. sort polygons"""
+        self.sort_polygons()
+        self.update_visibility_polygons()
+
+    def sort_polygons(self):
         self.polygons.sort(
             key=lambda polygon_obj: polygon_obj.max_z, reverse=True)
-
-        # self.bring_to_view()
-
-        self.update_visibility_polygons()
 
     def move_polygons(self, axis='x', amount='50'):
         for poly in self.polygons:
             poly.move(axis, amount)
 
     def update_visibility_polygons(self):
-        # delete after test####################
-        # inx = 0
-        # for my_poly in self.polygons:
-        #     print('polygon'+ str(inx), my_poly)
-        #     inx += 1
-        # #####################################
         """2. if visible = 1, add polygon to draw polygon list"""
 
         self.visible_polygons = []
@@ -204,16 +204,18 @@ class Shapes:
                 self.visible_polygons.append(poly)
 
     # only if flag of perspective changed
-    def changePerspective(self):
+    def change_perspective(self):
+        self.sort_polygons()
+
         for poly in self.polygons:
-            poly.features_calc(False, self.perspective)
+            poly.choose_perspective(self.perspective)
 
         self.update_visibility_polygons()
 
-    def setPerspective(self, perspective):
+    def set_perspective(self, perspective):
         if perspective != self.perspective:
             self.perspective = perspective
-            self.changePerspective()
+            self.change_perspective()
 
     def rotate_x(self, deg):
         pass
