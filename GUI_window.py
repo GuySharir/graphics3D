@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import filedialog
 from tkinter import colorchooser
+import tkinter.font as tkFont
 from shapes_util import *
 import os
 
@@ -21,14 +22,16 @@ class GUI_window():
         self.color_code = '#ffa4a9'
 
         # add massage box to contact with the user
+        fontStyle = tkFont.Font(family="Lucida Grande", size=13)
         self.messages = Label(
-            window, bg='pink', text="Lets start! Please upload file", anchor='w')
+            window, bg='pink', text="Lets start! Please upload file", anchor='w', font=fontStyle)
         self.messages.pack(fill=X, side=BOTTOM)
         self.warning_mg = 0
 
         # menu
         menubar = Frame(window)
         side_menu = Frame(window)
+        buttom_bar = Frame(window)
         # top buttons
         Button(menubar, text="File", command=self.browseFiles, height=2,
                width=10, bg='pink').grid(row=0, column=0, padx=10, pady=10)
@@ -174,16 +177,14 @@ class GUI_window():
         self.draw_polygons()
 
     def draw_polygons(self):
-        if self.data == None:
-            pass
-            # output to user - no file loaded
+        self.warning()
+        if self.warning_mg == 0:
+            self.clean_canvas()
+            self.messages.config(text=f"Now displaying file: {self.path}")
+            self.data.update_visibility_polygons()
 
-        self.clean_canvas()
-        self.messages.config(text=f"Now displaying file: {self.path}")
-        self.data.update_visibility_polygons()
+            for poly in self.data.visible_polygons:
+                point = poly.get_points_tuple()
 
-        for poly in self.data.visible_polygons:
-            point = poly.get_points_tuple()
-
-            self.canvas.create_polygon(
-                point, fill=self.color_code, width=2, outline='#ffffff')
+                self.canvas.create_polygon(
+                    point, fill=self.color_code, width=2, outline='#ffffff')
