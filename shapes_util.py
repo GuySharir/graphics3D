@@ -125,7 +125,20 @@ class Polygon:
 
     def perspective_project(self):
         """prespective projection"""
-        pass
+        center = (450, 300)
+        prespectivePoints = []
+
+        for point in self.points:
+            s = 1 / (1 + point.z / center.z)
+            matrix = [[s, 0, 0, 0], [0, s, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
+
+            vec = [point[0] - center[0], point[1] - center[1], point[2], 1]
+            res = np.matmul(vec, matrix)
+
+            prespectivePoints.append(
+                res[0][0] + center.x, res[0][1] + center.y)
+
+        self.points = prespectivePoints
 
     def orthographic_project(self):
         """orthographic projection"""
