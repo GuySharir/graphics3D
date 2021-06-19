@@ -31,7 +31,7 @@ class GUI_window():
         # menu
         menubar = Frame(window)
         side_menu = Frame(window)
-        buttom_bar = Frame(window)
+
         # top buttons
         Button(menubar, text="File", command=self.browseFiles, height=2,
                width=10, bg='pink').grid(row=0, column=0, padx=10, pady=10)
@@ -50,8 +50,8 @@ class GUI_window():
         menubar.pack(side=TOP)
 
         # left buttons
-        Scale(side_menu, label='Rotate', from_=10, to=100, orient=HORIZONTAL, showvalue=0,
-              tickinterval=30, command=self.angle_input).grid(row=0, column=0, padx=4, pady=4)
+        Scale(side_menu, label='Rotate', from_=-360, to=360, showvalue=1, orient=HORIZONTAL,
+               command=self.angle_input).grid(row=0, column=0, padx=0, pady=0)
 
         Button(side_menu, text="Rotate by x", command=lambda: self.rotate(
             'x'), height=2, width=10, bg='pink').grid(row=1, column=0, padx=10, pady=10)
@@ -62,8 +62,8 @@ class GUI_window():
         Button(side_menu, text="Rotate by z", command=lambda: self.rotate(
             'z'), height=2, width=10, bg='pink').grid(row=3, column=0, padx=10, pady=10)
 
-        Scale(side_menu, label='Move', from_=10, to=100, orient=HORIZONTAL, showvalue=0,
-              tickinterval=30, command=self.move_input).grid(row=4, column=0, padx=10, pady=10)
+        Scale(side_menu, label='Move', from_=-360, to=360, showvalue=1, orient=HORIZONTAL, 
+               command=self.move_input).grid(row=4, column=0, padx=50, pady=4)
 
         Button(side_menu, text="Move x", command=lambda: self.move(
             'x'), height=2, width=10, bg='pink').grid(row=5, column=0, padx=10, pady=10)
@@ -173,8 +173,9 @@ class GUI_window():
                         tmp = space_split[1].strip("\n").split(",")
                         polygons.append([float(x) for x in tmp])
 
-        self.data = Shapes(points, polygons)
-        self.draw_polygons()
+            read_obj.close()
+            self.data = Shapes(points, polygons)
+            self.draw_polygons()
 
     def draw_polygons(self):
         self.warning()
