@@ -38,9 +38,9 @@ class GUI_window():
         Button(menubar, text="orthographic", command=lambda: self.change_perspective(
             'orthographic'), height=2, width=10, bg='pink').grid(row=0, column=4, padx=10, pady=10)
         Button(menubar, text="color", command=self.choose_color, height=2,
-               width=10, bg='pink').grid(row=0, column=4, padx=10, pady=10)
-        Button(menubar, text="Exit", command=window.destroy, height=2,
                width=10, bg='pink').grid(row=0, column=5, padx=10, pady=10)
+        Button(menubar, text="Exit", command=window.destroy, height=2,
+               width=10, bg='pink').grid(row=0, column=6, padx=10, pady=10)
         menubar.pack(side=TOP)
 
         # left buttons
