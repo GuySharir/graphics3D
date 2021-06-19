@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import filedialog
+from tkinter import colorchooser
 import shapes_util
 import os
 
@@ -31,15 +32,16 @@ class GUI_window():
         Button(menubar, text = "perspective",command = lambda: self.change_perspective('perspective'), height=2, width=10, bg = 'pink').grid(row=0, column=2, padx= 10, pady= 10)
         Button(menubar, text = "oblique",command = lambda: self.change_perspective('oblique'), height=2, width=10, bg = 'pink').grid(row=0, column=3, padx= 10, pady= 10)         
         Button(menubar, text = "orthographic",command = lambda: self.change_perspective('orthographic'), height=2, width=10, bg = 'pink').grid(row=0, column=4, padx= 10, pady= 10)
+        Button(menubar, text = "color",command = self.choose_color, height=2, width=10, bg = 'pink').grid(row=0, column=4, padx= 10, pady= 10)
         Button(menubar, text = "Exit",command = window.destroy, height=2, width=10, bg = 'pink').grid(row=0, column=5, padx= 10, pady= 10)
         menubar.pack(side=TOP)
 
         # left buttons
-        Scale(side_menu, label='Rotate', from_=10, to=100, orient=HORIZONTAL, showvalue=0, tickinterval=30, command=lambda: self.angle('Rotate')).grid(row=0, column=0, padx= 4, pady= 4)
+        Scale(side_menu, label='Rotate', from_=10, to=100, orient=HORIZONTAL, showvalue=0, tickinterval=30, command=self.angle_input).grid(row=0, column=0, padx= 4, pady= 4)
         Button(side_menu, text = "Rotate by x",command = lambda: self.rotate('x'), height=2, width=10, bg = 'pink').grid(row=1, column=0, padx= 10, pady= 10)
         Button(side_menu, text = "Rotate by y",command = lambda: self.rotate('y'), height=2, width=10, bg = 'pink').grid(row=2, column=0, padx= 10, pady= 10)
         Button(side_menu, text = "Rotate by z",command = lambda: self.rotate('z'), height=2, width=10, bg = 'pink').grid(row=3, column=0, padx= 10, pady= 10)
-        Scale(side_menu, label='Move', from_=10, to=100, orient=HORIZONTAL, showvalue=0, tickinterval=30, command=lambda: self.angle('Move')).grid(row=4, column=0, padx= 10, pady= 10)
+        Scale(side_menu, label='Move', from_=10, to=100, orient=HORIZONTAL, showvalue=0, tickinterval=30, command=self.move_input).grid(row=4, column=0, padx= 10, pady= 10)
         Button(side_menu, text = "Move x",command = lambda: self.move('x'), height=2, width=10, bg = 'pink').grid(row=5, column=0, padx= 10, pady= 10)
         Button(side_menu, text = "Move y",command = lambda: self.move('y'), height=2, width=10, bg = 'pink').grid(row=6, column=0, padx= 10, pady= 10)
         Button(side_menu, text = "Move z",command = lambda: self.move('z'), height=2, width=10, bg = 'pink').grid(row=7, column=0, padx= 10, pady= 10)
@@ -52,11 +54,14 @@ class GUI_window():
 
         window.mainloop()
 
-    def angle(self, obj):
-        if obj == 'Rotate':
-            self.deg = obj
-        if obj == 'Move':
-            self.move_val = obj
+    def angle_input(self, rotate):
+        self.deg = rotate
+
+    def move_input(self, move):
+        self.move_val = move
+
+    def choose_color(self):
+        self.color_code = colorchooser.askcolor(title ="Choose color")
 
     def move(self, axis='y'):
         self.data.move_polygons(axis, self.move_val)
