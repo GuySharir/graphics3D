@@ -10,7 +10,7 @@ class GUI_window():
         window.title("3D transformations")
         window.geometry("1000x600")
         self.path = os.getcwd()
-
+        
         # for move
         self.move_val = 50
 
@@ -23,48 +23,40 @@ class GUI_window():
         self.messages.pack(fill=X, side=BOTTOM)
 
         # menu
-        menubar = Menu(window)
+        menubar = Frame(window)
+        side_menu = Frame(window)
+        # top buttons
+        Button(menubar, text = "File",command = self.browseFiles, height=2, width=10, bg = 'pink').grid(row=0, column=0, padx= 10, pady= 10)
+        Button(menubar, text = "Clean canvas",command = lambda: self.clean_canvas(True), height=2, width=10, bg = 'pink').grid(row=0, column=1, padx= 10, pady= 10)
+        Button(menubar, text = "perspective",command = lambda: self.change_perspective('perspective'), height=2, width=10, bg = 'pink').grid(row=0, column=2, padx= 10, pady= 10)
+        Button(menubar, text = "oblique",command = lambda: self.change_perspective('oblique'), height=2, width=10, bg = 'pink').grid(row=0, column=3, padx= 10, pady= 10)         
+        Button(menubar, text = "orthographic",command = lambda: self.change_perspective('orthographic'), height=2, width=10, bg = 'pink').grid(row=0, column=4, padx= 10, pady= 10)
+        Button(menubar, text = "Exit",command = window.destroy, height=2, width=10, bg = 'pink').grid(row=0, column=5, padx= 10, pady= 10)
+        menubar.pack(side=TOP)
 
-        # add file upload option
-        file_menu = Menu(menubar)
-        menubar.add_cascade(label="File", menu=file_menu)
-        file_menu.add_command(label="Browse File", command=self.browseFiles)
-        file_menu.add_separator()
-        # file_menu.add_command(label="File Help", command=self.file_help)
-
-        menubar.add_command(label="Clean canvas",
-                            command=lambda: self.clean_canvas(True))
-
-        menubar.add_command(label="Rotate by X",
-                            command=lambda: self.rotate('x'))
-        menubar.add_command(label="Rotate by Y",
-                            command=lambda: self.rotate('y'))
-        menubar.add_command(label="Rotate by Z",
-                            command=lambda: self.rotate('z'))
-
-        menubar.add_command(label="Move x", command=lambda: self.move('x'))
-        menubar.add_command(label="Move y", command=lambda: self.move('y'))
-        menubar.add_command(label="Move z", command=lambda: self.move('z'))
-
-        menubar.add_command(label="perspective",
-                            command=lambda: self.change_perspective('perspective'))
-        menubar.add_command(
-            label="oblique", command=lambda: self.change_perspective('oblique'))
-        menubar.add_command(label="orthographic",
-                            command=lambda: self.change_perspective('orthographic'))
-
-        menubar.add_command(label="Exit", command=window.destroy)
-        window.config(menu=menubar)
+        # left buttons
+        Scale(side_menu, label='Rotate', from_=10, to=100, orient=HORIZONTAL, showvalue=0, tickinterval=30, command=lambda: self.angle('Rotate')).grid(row=0, column=0, padx= 4, pady= 4)
+        Button(side_menu, text = "Rotate by x",command = lambda: self.rotate('x'), height=2, width=10, bg = 'pink').grid(row=1, column=0, padx= 10, pady= 10)
+        Button(side_menu, text = "Rotate by y",command = lambda: self.rotate('y'), height=2, width=10, bg = 'pink').grid(row=2, column=0, padx= 10, pady= 10)
+        Button(side_menu, text = "Rotate by z",command = lambda: self.rotate('z'), height=2, width=10, bg = 'pink').grid(row=3, column=0, padx= 10, pady= 10)
+        Scale(side_menu, label='Move', from_=10, to=100, orient=HORIZONTAL, showvalue=0, tickinterval=30, command=lambda: self.angle('Move')).grid(row=4, column=0, padx= 10, pady= 10)
+        Button(side_menu, text = "Move x",command = lambda: self.move('x'), height=2, width=10, bg = 'pink').grid(row=5, column=0, padx= 10, pady= 10)
+        Button(side_menu, text = "Move y",command = lambda: self.move('y'), height=2, width=10, bg = 'pink').grid(row=6, column=0, padx= 10, pady= 10)
+        Button(side_menu, text = "Move z",command = lambda: self.move('z'), height=2, width=10, bg = 'pink').grid(row=7, column=0, padx= 10, pady= 10)
+        side_menu.pack(side=LEFT)
 
         self.img_size = 700
         self.canvas = Canvas(window, width=self.img_size,
                              height=self.img_size, background='white')
         self.canvas.pack(fill=X)
-        # img = PhotoImage(width=self.img_size, height=self.img_size)
-        # self.canvas.create_image(
-        #     (self.img_size // 2, self.img_size // 2), image=img, state="normal")
 
         window.mainloop()
+
+    def angle(self, obj):
+        if obj == 'Rotate':
+            self.deg = obj
+        if obj == 'Move':
+            self.move_val = obj
 
     def move(self, axis='y'):
         self.data.move_polygons(axis, self.move_val)
@@ -80,10 +72,6 @@ class GUI_window():
         self.messages.config(text="All clean! Let's start again")
         if removeFile:
             self.data = None
-
-        # self.img = PhotoImage(width=self.img_size, height=self.img_size)
-        # self.canvas.create_image(
-        #     (self.img_size // 2, self.img_size // 2), image=self.img, state="normal")
 
     def change_perspective(self, case):
         self.data.set_perspective(case)
