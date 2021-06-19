@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import filedialog
 from tkinter import colorchooser
-import shapes_util
+from shapes_util import *
 import os
 
 
@@ -101,6 +101,7 @@ class GUI_window():
         self.canvas.delete("all")
         self.messages.config(text="All clean! Let's start again")
         if removeFile:
+            print("********** removing file ***********")
             self.data = None
 
     def change_perspective(self, case):
@@ -119,8 +120,8 @@ class GUI_window():
                                                           "*.*")))
 
         if filename != '':
-            self.getFileObjects(filename)
             self.path = filename
+            self.getFileObjects(filename)
 
     def getFileObjects(self, fileName):
         '''read file content into two lists - points and polygons'''
@@ -149,23 +150,23 @@ class GUI_window():
                         tmp = space_split[1].strip("\n").split(",")
                         polygons.append([float(x) for x in tmp])
 
-        self.data = shapes_util.Shapes(points, polygons)
-
+        self.data = Shapes(points, polygons)
         self.draw_polygons()
 
     def draw_polygons(self):
-        self.warning()
-        if self.warning_mg == 0:
-            self.clean_canvas()
-            self.data.update_visibility_polygons()
-            # self.data.sort_polygons()
+        if self.data == None:
+            pass
+            # output to user - no file loaded
 
-            polygons_display = [shapes_util.Polygon(
-                x.get_points_list())for x in self.data.visible_polygons]
+        self.clean_canvas()
+        self.messages.config(text=f"Now displaying file: {self.path}")
+        self.data.update_visibility_polygons()
 
-            for poly in polygons_display:
-                poly.center_poly()
-                self.canvas.create_polygon(poly.get_points_tuple(
-                ), fill='#ffa4a9', width=2, outline='#ffffff')
-                
-            
+        polygons_display = [Polygon(
+            x.get_points_list())for x in self.data.visible_polygons]
+
+        for poly in polygons_display:
+            # poly.center_poly()
+            # print(poly)
+            self.canvas.create_polygon(poly.get_points_tuple(
+            ), fill='#ffa4a9', width=2, outline='#ffffff')
