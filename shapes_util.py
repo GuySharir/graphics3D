@@ -125,20 +125,20 @@ class Polygon:
 
     def perspective_project(self):
         """prespective projection"""
-        center = (450, 300)
+        center = (450, 300, 300)
         prespectivePoints = []
 
-        for point in self.points:
-            s = 1 / (1 + point.z / center.z)
+        for point in self.originalPoints:
+            s = 1 / (1 + point[2] / center[2])
             matrix = [[s, 0, 0, 0], [0, s, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
 
-            vec = [point[0] - center[0], point[1] - center[1], point[2], 1]
+            vec = [point[0], point[1], point[2], 1]
             res = np.matmul(vec, matrix)
-
             prespectivePoints.append(
-                res[0][0] + center.x, res[0][1] + center.y)
+                [res[0], res[1], 1])
 
         self.points = prespectivePoints
+        print(self.points)
 
     def orthographic_project(self):
         """orthographic projection"""
@@ -157,17 +157,26 @@ class Polygon:
                 point[1] += val
 
             if axis == 'z':
-                point[2] += val
+                self.zoom(val)
 
-        # self.originalPoints = self.points
+    def zoom(self, val):
+        if val > 0:
+            val = 1.1
+        else:
+            val = 0.9
 
-    def center_poly(self):
-        # print(f"before: {self.points}")
+        mat = [[val, 0, 0, 0],
+               [0, val, 0, 0],
+               [0, 0, val, 0],
+               [0, 0, 0, val]]
+
+        new_points = []
         for point in self.points:
-            point[0] += 400
-            point[1] += 300
+            vec = np.array([point[0], point[1], point[2], 1])
+            result = np.matmul(vec, mat)
+            new_points.append([result[0], result[1], result[2]])
 
-        # print(f"after: {self.points}")
+        self.points = new_points
 
 
 class Shapes:
@@ -252,36 +261,21 @@ class Shapes:
             self.change_perspective()
 
     def rotate(self, direction, angle):
-        ''' Rotation transformation multiplier every value
-        with the mulMatrix that was build also by the wanted angle
-        the direction by the wanted transformation: x,y,z '''
         mat = []
         cos = math.cos(angle * math.pi / 180)
         sin = math.sin(angle * math.pi / 180)
 
         if direction == 'x':
-            mat = ([
-                [1, 0, 0, 0],
-                [0, cos, sin, 0],
-                [0, -sin, cos, 0],
-                [0, 0, 0, 1]
-            ])
+            mat = ([[1, 0, 0, 0], [0, cos, sin, 0],
+                    [0, -sin, cos, 0], [0, 0, 0, 1]])
 
-        elif direction == 'y':
-            mat = ([
-                [cos, 0, -sin, 0],
-                [0, 1, 0, 0],
-                [sin, 0, cos, 0],
-                [0, 0, 0, 1]
-            ])
+        if direction == 'y':
+            mat = ([[cos, 0, -sin, 0], [0, 1, 0, 0],
+                   [sin, 0, cos, 0], [0, 0, 0, 1]])
 
-        elif direction == 'z':
-            mat = ([
-                [cos, sin, 0, 0],
-                [-sin, cos, 0, 0],
-                [0, 0, 1, 0],
-                [0, 0, 0, 1]
-            ])
+        if direction == 'z':
+            mat = ([[cos, sin, 0, 0], [-sin, cos, 0, 0],
+                    [0, 0, 1, 0], [0, 0, 0, 1]])
 
         for poly in self.polygons:
 
@@ -292,13 +286,10 @@ class Shapes:
                     point[1]), float(point[2]), 1]
 
                 new_point = np.matmul(new_point, mat)
-                # new_point = [float(x) for x in tmp]
                 new_point = list(new_point[:-1])
                 new_points.append(new_point)
 
             poly.set_new_points(new_points)
-            # poly.originalPoints = poly.points
-
             poly.features_calc()
 
         self.update_visibility_polygons()
