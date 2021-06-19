@@ -30,7 +30,7 @@ def multyplication_points(l_point, r_point):
 class Polygon:  # max_z, normal, visible, fill_color
     """constructor"""
 
-    def __init__(self, points):
+    def _init_(self, points):
         self.lineColor = "#000000"
         self.points = points        # [[x,y,z],[x,y,z],[x,y,z],[x,y,z]]
         self.originalPoints = points
@@ -38,19 +38,11 @@ class Polygon:  # max_z, normal, visible, fill_color
         self.normal = []
         self.features_calc()
 
-    def __repr__(self):
+    def _repr_(self):
         return "polygon object"
 
-    def __str__(self):
+    def _str_(self):
         """print polygon info"""
-        # index = 0
-        # index2 = 0
-        # for point in self.points3D:
-        #     print("point_3D " + str(index) + ": ", point)
-        #     index += 1
-
-        # for point in self.points:
-        #     print(f"point : {point}")
         print("points: ", self.points)
         print("max_z", self.max_z)
         print("normal", self.normal)
@@ -166,9 +158,9 @@ class Shapes:
     polygons = []
     visible_polygons = []
     points = {}
-    perspective = ""
+    perspective = "oblique"
 
-    def __init__(self, point_list, polygon_list):
+    def _init_(self, point_list, polygon_list):
         """insert 3D point and polygons from file"""
 
         for point_number in point_list:
@@ -183,8 +175,35 @@ class Shapes:
             tmp = []
 
         """1. sort polygons"""
-        self.sort_polygons()
-        self.update_visibility_polygons()
+        # self.sort_polygons()
+        # self.update_visibility_polygons()
+
+    def centere_scene(self):
+        max_x = 0
+        max_y = 0
+        min_x = 0
+        min_y = 0
+
+        for poly in self.polygons:
+            for point in poly.points:
+                max_x = max(max_x, point[0])
+                max_y = max(max_y, point[1])
+                min_x = min(min_x, point[0])
+                min_y = min(min_y, point[1])
+
+        for poly in self.polygons:
+            for point in poly.points:
+                if min_x < 0:
+                    point[0] += 450 - min_x
+
+                if min_y < 0:
+                    point[1] += 300 - min_y
+
+                if max_x > 700:
+                    pass
+
+                if max_y > 700:
+                    pass
 
     def sort_polygons(self):
         self.polygons.sort(
@@ -216,15 +235,6 @@ class Shapes:
         if perspective != self.perspective:
             self.perspective = perspective
             self.change_perspective()
-
-    def rotate_x(self, deg):
-        pass
-
-    def rotate_y(self, deg):
-        pass
-
-    def rotate_z(self, deg):
-        pass
 
     def rotate(self, direction='x', angle=90):
         ''' Rotation transformation multiplier every value
@@ -258,7 +268,7 @@ class Shapes:
                 [0, 0, 0, 1]
             ])
 
-        for poly in self.visible_polygons:
+        for poly in self.polygons:
             print(f'before: {poly.get_points_list()}')
             new_points = []
             points = poly.get_points_list()
@@ -273,3 +283,6 @@ class Shapes:
 
             poly.set_new_points(new_points)
             print(f'after: {poly.get_points_list()}')
+            poly.features_calc()
+
+        self.update_visibility_polygons()
