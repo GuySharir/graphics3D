@@ -32,7 +32,8 @@ class GUI_window():
         file_menu.add_separator()
         # file_menu.add_command(label="File Help", command=self.file_help)
 
-        menubar.add_command(label="Clean canvas", command=self.clean_canvas)
+        menubar.add_command(label="Clean canvas",
+                            command=lambda: self.clean_canvas(True))
 
         menubar.add_command(label="Rotate by X",
                             command=lambda: self.rotate('x'))
@@ -45,6 +46,13 @@ class GUI_window():
         menubar.add_command(label="Move y", command=lambda: self.move('y'))
         menubar.add_command(label="Move z", command=lambda: self.move('z'))
 
+        menubar.add_command(label="perspective",
+                            command=lambda: self.change_perspective('perspective'))
+        menubar.add_command(
+            label="oblique", command=lambda: self.change_perspective('oblique'))
+        menubar.add_command(label="orthographic",
+                            command=lambda: self.change_perspective('orthographic'))
+
         menubar.add_command(label="Exit", command=window.destroy)
         window.config(menu=menubar)
 
@@ -52,30 +60,34 @@ class GUI_window():
         self.canvas = Canvas(window, width=self.img_size,
                              height=self.img_size, background='white')
         self.canvas.pack(fill=X)
-        img = PhotoImage(width=self.img_size, height=self.img_size)
-        self.canvas.create_image(
-            (self.img_size // 2, self.img_size // 2), image=img, state="normal")
+        # img = PhotoImage(width=self.img_size, height=self.img_size)
+        # self.canvas.create_image(
+        #     (self.img_size // 2, self.img_size // 2), image=img, state="normal")
 
         window.mainloop()
 
     def move(self, axis='y'):
         self.data.move_polygons(axis, self.move_val)
-        self.data.update_visibility_polygons()
         self.draw_polygons()
 
     def rotate(self, case, val=15):
         self.data.rotate(case, val)
-        self.data.update_visibility_polygons()
         self.draw_polygons()
 
-    def clean_canvas(self):
+    def clean_canvas(self, removeFile=False):
         '''clean canvas'''
         self.canvas.delete("all")
         self.messages.config(text="All clean! Let's start again")
+        if removeFile:
+            self.data = None
 
-        self.img = PhotoImage(width=self.img_size, height=self.img_size)
-        self.canvas.create_image(
-            (self.img_size // 2, self.img_size // 2), image=self.img, state="normal")
+        # self.img = PhotoImage(width=self.img_size, height=self.img_size)
+        # self.canvas.create_image(
+        #     (self.img_size // 2, self.img_size // 2), image=self.img, state="normal")
+
+    def change_perspective(self, case):
+        self.data.set_perspective(case)
+        self.draw_polygons()
 
     def browseFiles(self):
         '''upload file'''
@@ -121,7 +133,20 @@ class GUI_window():
         self.draw_polygons()
 
     def draw_polygons(self):
+        if self.data == None:
+            pass
+            # output to user - no file loaded
+
         self.clean_canvas()
-        for poly in self.data.visible_polygons:
+        self.data.update_visibility_polygons()
+        # self.data.sort_polygons()
+
+        polygons_display = [shapes_util.Polygon(
+            x.get_points_list())for x in self.data.visible_polygons]
+
+        for poly in polygons_display:
+            poly.center_poly()
+
+        for poly in polygons_display:
             self.canvas.create_polygon(poly.get_points_tuple(
             ), fill='#ffa4a9', width=2, outline='#ffffff')
