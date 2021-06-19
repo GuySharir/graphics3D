@@ -105,20 +105,12 @@ class GUI_window():
             self.data = None
 
     def change_perspective(self, case):
+        self.warning()
+        if self.warning_mg == 0:
+            self.data.set_perspective(case)
+            self.draw_polygons()
 
-
-<< << << < Updated upstream
-   self.warning()
-    if self.warning_mg == 0:
-        self.data.set_perspective(case)
-        self.draw_polygons()
-== == == =
-   print(f"changing to: {case}")
-    self.data.set_perspective(case)
-    self.draw_polygons()
->>>>>> > Stashed changes
-
-   def browseFiles(self):
+    def browseFiles(self):
         '''upload file'''
         filename = filedialog.askopenfilename(initialdir=self.path,
                                               title="Select a File",
