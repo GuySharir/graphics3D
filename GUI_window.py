@@ -11,10 +11,10 @@ class GUI_window():
         window.title("3D transformations")
         window.geometry("1000x600")
         self.path = os.getcwd()
+        self.data = None
 
         # for move
         self.move_val = 50
-
         # for rotate
         self.deg = 45
 
@@ -22,7 +22,7 @@ class GUI_window():
         self.messages = Label(
             window, bg='pink', text="Lets start! Please upload file", anchor='w')
         self.messages.pack(fill=X, side=BOTTOM)
-
+        self.warning_mg = 0
         # menu
         menubar = Frame(window)
         side_menu = Frame(window)
@@ -69,6 +69,12 @@ class GUI_window():
 
         window.mainloop()
 
+    def warning(self):
+        '''warning message to user'''
+        if self.data == None:
+            self.warning_mg = 1
+            self.messages.config(text="warning!!! please load file")
+
     def angle_input(self, rotate):
         self.deg = rotate
 
@@ -79,12 +85,16 @@ class GUI_window():
         self.color_code = colorchooser.askcolor(title="Choose color")
 
     def move(self, axis='y'):
-        self.data.move_polygons(axis, self.move_val)
-        self.draw_polygons()
+        self.warning()
+        if self.warning_mg == 0:
+            self.data.move_polygons(axis, self.move_val)
+            self.draw_polygons()
 
     def rotate(self, case, val=15):
-        self.data.rotate(case, val)
-        self.draw_polygons()
+        self.warning()
+        if self.warning_mg == 0:
+            self.data.rotate(case, val)
+            self.draw_polygons()
 
     def clean_canvas(self, removeFile=False):
         '''clean canvas'''
@@ -94,8 +104,10 @@ class GUI_window():
             self.data = None
 
     def change_perspective(self, case):
-        self.data.set_perspective(case)
-        self.draw_polygons()
+        self.warning()
+        if self.warning_mg == 0:
+            self.data.set_perspective(case)
+            self.draw_polygons()
 
     def browseFiles(self):
         '''upload file'''
@@ -115,6 +127,7 @@ class GUI_window():
         read_object = "empty"
         points = {}
         polygons = []
+        self.warning_mg = 0
 
         if fileName:
             with open(fileName, 'r') as read_obj:
@@ -141,18 +154,18 @@ class GUI_window():
         self.draw_polygons()
 
     def draw_polygons(self):
-        if self.data == None:
-            pass
-            # output to user - no file loaded
+        self.warning()
+        if self.warning_mg == 0:
+            self.clean_canvas()
+            self.data.update_visibility_polygons()
+            # self.data.sort_polygons()
 
-        self.clean_canvas()
-        self.data.update_visibility_polygons()
-        # self.data.sort_polygons()
+            polygons_display = [shapes_util.Polygon(
+                x.get_points_list())for x in self.data.visible_polygons]
 
-        polygons_display = [shapes_util.Polygon(
-            x.get_points_list())for x in self.data.visible_polygons]
-
-        for poly in polygons_display:
-            poly.center_poly()
-            self.canvas.create_polygon(poly.get_points_tuple(
-            ), fill='#ffa4a9', width=2, outline='#ffffff')
+            for poly in polygons_display:
+                poly.center_poly()
+                self.canvas.create_polygon(poly.get_points_tuple(
+                ), fill='#ffa4a9', width=2, outline='#ffffff')
+                
+            
