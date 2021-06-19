@@ -14,15 +14,18 @@ class GUI_window():
         self.data = None
 
         # for move
-        self.move_val = 50
+        self.move_val = 10
         # for rotate
-        self.deg = 45
+        self.deg = 10
+
+        self.color_code = '#ffa4a9'
 
         # add massage box to contact with the user
         self.messages = Label(
             window, bg='pink', text="Lets start! Please upload file", anchor='w')
         self.messages.pack(fill=X, side=BOTTOM)
         self.warning_mg = 0
+
         # menu
         menubar = Frame(window)
         side_menu = Frame(window)
@@ -46,20 +49,28 @@ class GUI_window():
         # left buttons
         Scale(side_menu, label='Rotate', from_=10, to=100, orient=HORIZONTAL, showvalue=0,
               tickinterval=30, command=self.angle_input).grid(row=0, column=0, padx=4, pady=4)
+
         Button(side_menu, text="Rotate by x", command=lambda: self.rotate(
             'x'), height=2, width=10, bg='pink').grid(row=1, column=0, padx=10, pady=10)
+
         Button(side_menu, text="Rotate by y", command=lambda: self.rotate(
             'y'), height=2, width=10, bg='pink').grid(row=2, column=0, padx=10, pady=10)
+
         Button(side_menu, text="Rotate by z", command=lambda: self.rotate(
             'z'), height=2, width=10, bg='pink').grid(row=3, column=0, padx=10, pady=10)
+
         Scale(side_menu, label='Move', from_=10, to=100, orient=HORIZONTAL, showvalue=0,
               tickinterval=30, command=self.move_input).grid(row=4, column=0, padx=10, pady=10)
+
         Button(side_menu, text="Move x", command=lambda: self.move(
             'x'), height=2, width=10, bg='pink').grid(row=5, column=0, padx=10, pady=10)
+
         Button(side_menu, text="Move y", command=lambda: self.move(
             'y'), height=2, width=10, bg='pink').grid(row=6, column=0, padx=10, pady=10)
+
         Button(side_menu, text="Move z", command=lambda: self.move(
             'z'), height=2, width=10, bg='pink').grid(row=7, column=0, padx=10, pady=10)
+
         side_menu.pack(side=LEFT)
 
         self.img_size = 700
@@ -76,13 +87,22 @@ class GUI_window():
             self.messages.config(text="warning!!! please load file")
 
     def angle_input(self, rotate):
-        self.deg = rotate
+        self.deg = int(rotate)
 
     def move_input(self, move):
-        self.move_val = move
+        self.move_val = int(move)
 
     def choose_color(self):
-        self.color_code = colorchooser.askcolor(title="Choose color")
+        old_color = self.color_code
+        self.color_code = colorchooser.askcolor(title="Choose color")[1]
+
+        if self.color_code == '#ffffff':
+            self.messages.config(
+                text="warning! you are setting white shapes on white background. choose a different color")
+            self.color_code = old_color
+
+        elif self.data:
+            self.draw_polygons()
 
     def move(self, axis='y'):
         self.warning()
@@ -90,10 +110,10 @@ class GUI_window():
             self.data.move_polygons(axis, self.move_val)
             self.draw_polygons()
 
-    def rotate(self, case, val=15):
+    def rotate(self, case):
         self.warning()
         if self.warning_mg == 0:
-            self.data.rotate(case, val)
+            self.data.rotate(case, self.deg)
             self.draw_polygons()
 
     def clean_canvas(self, removeFile=False):
@@ -162,11 +182,8 @@ class GUI_window():
         self.messages.config(text=f"Now displaying file: {self.path}")
         self.data.update_visibility_polygons()
 
-        polygons_display = [Polygon(
-            x.get_points_list())for x in self.data.visible_polygons]
+        for poly in self.data.visible_polygons:
+            point = poly.get_points_tuple()
 
-        for poly in polygons_display:
-            # poly.center_poly()
-            # print(poly)
-            self.canvas.create_polygon(poly.get_points_tuple(
-            ), fill='#ffa4a9', width=2, outline='#ffffff')
+            self.canvas.create_polygon(
+                point, fill=self.color_code, width=2, outline='#ffffff')

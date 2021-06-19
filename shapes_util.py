@@ -52,7 +52,7 @@ class Polygon:
         """get list of points using tuple"""
         points = []
         for point in self.points:
-            points.extend([point[0], point[1]])
+            points.extend([point[0] + 400, point[1] + 300])
 
         return points
 
@@ -115,7 +115,7 @@ class Polygon:
         )
 
         new_points = []
-        for point in self.points:
+        for point in self.originalPoints:
             vec = np.array([point[0], point[1], point[2], 1])
             result = np.matmul(vec, mtrix)
 
@@ -130,7 +130,7 @@ class Polygon:
     def orthographic_project(self):
         """orthographic projection"""
         new_points = []
-        for point in self.points:
+        for point in self.originalPoints:
             new_points.append([point[0], point[1], 0])
 
         self.points = new_points
@@ -146,13 +146,15 @@ class Polygon:
             if axis == 'z':
                 point[2] += val
 
+        # self.originalPoints = self.points
+
     def center_poly(self):
-        print(f"before: {self.points}")
+        # print(f"before: {self.points}")
         for point in self.points:
             point[0] += 400
             point[1] += 300
 
-        print(f"after: {self.points}")
+        # print(f"after: {self.points}")
 
 
 class Shapes:
@@ -207,7 +209,7 @@ class Shapes:
 
     def sort_polygons(self):
         self.polygons.sort(
-            key=lambda polygon_obj: polygon_obj.max_z, reverse=True)
+            key=lambda polygon_obj: polygon_obj.max_z, reverse=False)
 
     def move_polygons(self, axis='x', amount='50'):
         for poly in self.polygons:
@@ -236,7 +238,7 @@ class Shapes:
             self.perspective = perspective
             self.change_perspective()
 
-    def rotate(self, direction='x', angle=90):
+    def rotate(self, direction, angle):
         ''' Rotation transformation multiplier every value
         with the mulMatrix that was build also by the wanted angle
         the direction by the wanted transformation: x,y,z '''
@@ -282,6 +284,7 @@ class Shapes:
                 new_points.append(new_point)
 
             poly.set_new_points(new_points)
+            # poly.originalPoints = poly.points
 
             poly.features_calc()
 
